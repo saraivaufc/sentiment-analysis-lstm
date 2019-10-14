@@ -9,24 +9,25 @@ from utils import load_data
 seed = 0
 np.random.seed(seed)
 
-# O model será exportado para este arquivo
+# model
 filename = 'model.h5'
 
+# epochs
 epochs = 5
 
-# dimensionalidade do word embedding pré-treinado
+# pre-trained word embedding dimensionality
 word_embedding_dim = 50
 
-# número de amostras a serem utilizadas em cada atualização do gradiente
+# number of samples to use for each gradient update
 batch_size = 256
 
-# Reflete a quantidade máxima de palavras que iremos manter no vocabulário
+# maximum amount of words we will keep in the vocabulary
 max_fatures = 5000
 
-# dimensão de saída da camada Embedding
+# Embedding layer output dimension
 embed_dim = 128
 
-# limitamos o tamanho máximo de todas as sentenças
+# maximum length of all sentences
 max_sequence_length = 300
 
 X_train, X_test, Y_train, Y_test, word_index, tokenizer = load_data(
@@ -41,9 +42,7 @@ model = model_fn(max_sequence_length, max_fatures, embed_dim)
 
 if not os.path.exists('./{}'.format(filename)):
 
-    hist = model.fit(
-        X_train,
-        Y_train,
+    model.fit(X_train, Y_train,
         validation_data=(X_test, Y_test),
         epochs=epochs,
         batch_size=batch_size,
@@ -58,7 +57,7 @@ scores = model.evaluate(X_test, Y_test, verbose=0, batch_size=batch_size)
 print("Acc: %.2f%%" % (scores[1] * 100))
 
 while True:
-    sentence = input(">")
+    sentence = input(">>")
 
     if sentence == "exit":
         break
@@ -73,9 +72,9 @@ while True:
 
     sentiment = model.predict(new_text, batch_size=1, verbose=2)[0]
 
-    if (np.argmax(sentiment) == 0):
+    if np.argmax(sentiment) == 0:
         pred_proba = "%.2f%%" % (sentiment[0] * 100)
-        print("negativo => ", pred_proba)
-    elif (np.argmax(sentiment) == 1):
+        print("negative => ", pred_proba)
+    elif np.argmax(sentiment) == 1:
         pred_proba = "%.2f%%" % (sentiment[1] * 100)
-        print("positivo => ", pred_proba)
+        print("positive => ", pred_proba)
