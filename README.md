@@ -7,6 +7,8 @@
 * Pandas -- [Homepage](https://pandas.pydata.org/)
 * Natural Language Toolkit -- [Homepage](https://www.nltk.org/)
 
+![Drag Racing](docs/sentiment_analysis.jpg)
+
 ### Create and activate a virtual environment
 ```shell
 $ virtualenv env -p python3
