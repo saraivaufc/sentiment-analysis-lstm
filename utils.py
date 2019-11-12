@@ -1,11 +1,14 @@
 import re
 
 import pandas as pd
+import numpy as np
 from nltk.corpus import stopwords
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.text import text_to_word_sequence
+
+import settings
 
 
 def clean_str(string):
@@ -33,7 +36,8 @@ def clean_str(string):
 
     return string.strip().lower()
 
-def load_data(file, max_fatures, max_sequence_length):
+
+def load_data(file, max_sequence_length):
     data = pd.read_excel(file)
 
     data = data[['text', 'sentiment']]
@@ -51,15 +55,18 @@ def load_data(file, max_fatures, max_sequence_length):
         no_stop_words = " ".join(no_stop_words)
         text.append(no_stop_words)
 
-    tokenizer = Tokenizer(num_words=max_fatures, split=' ')
+    tokenizer = Tokenizer(lower=True, split=' ')
 
     tokenizer.fit_on_texts(text)
+
     X = tokenizer.texts_to_sequences(text)
 
     X = pad_sequences(X, maxlen=max_sequence_length)
 
     word_index = tokenizer.word_index
-    Y = pd.get_dummies(data['sentiment']).values
+
+    Y = data['sentiment']
+
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.20,
                                                         random_state=42)
 
